@@ -1,11 +1,16 @@
-# This file contains my plans fro creating this application
+# This file contains my plans for creating this application
 
 The goal of this project is to develop a notebook application from scratch using methods i've not tried out before. The main goal of this project is to explore code testing in visual studio.
-The project starts by creating a bareboned plan for the application structure. The code functionality is created using TDD method.
 
 ## Application structure
 
-This application is built in Dotnet(Core) framework with C# language. The application is a WebAPI that responses to HTTP requests. 
+This application is built in Dotnet(Core) framework with C# language. The application is a WebAPI that responses to HTTP requests. There won't be a frontend implementation, so the application requests will be done using postman or swashbuckle.
+
+The application consist of a controller, business logic, data logic and a database. Controller handles user requests, business logic handles, well business logic, data logic handles database requests and response and the Database which stores the data. Here's littlem ore info about the components:
+  - Controller handles GET, POST and DELETE requests from user. GET request is used for listing all entries or finding a single specific entry. POST is used to storing a new entry. DELETE request deletes saved entry of choice. 
+  - Business logic is called from controller to handle client request. 
+  - Data logic handles calls for database and determinates returned datatype. Called from Business Logic. Entity framework. 
+  - Database stores all the given data. Database will most likely be SQL based, eiter SQLite or SQLServer.
 
 ![image](https://user-images.githubusercontent.com/60960104/227202231-75a146c7-32f8-4bc8-a5d4-abfaaa7b2e5a.png)
 
