@@ -1,12 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BusinessAndDataProject.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace NotebookApp.Controllers
 {
     public class NoteBookController : Controller
     {
-        public IActionResult Index()
+
+        public async Task<IActionResult> GetNoteList(List<Note> ?res) //return all notes
         {
-            return View();
+            var result = res;
+
+            if (result is null)
+                return StatusCode(statusCode: 500,"Failed to connect to database");
+
+            else if (!result.Any())
+                return NotFound("You don't have any notes");
+
+            else
+                return Ok(result);   
         }
     }
 }
