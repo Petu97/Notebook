@@ -8,7 +8,7 @@ namespace NotebookApp.Controllers
 
         public async Task<IActionResult> GetNoteList(List<Note> ?res) //return all notes
         {
-            var result = res;
+            var result = res; //add async function for finding notes in database
 
             if (result is null)
                 return StatusCode(statusCode: 500,"Failed to connect to database");
