@@ -8,7 +8,6 @@ namespace TestsProject
     {
         #region GET_GetNoteList
 
-
         [Fact]
         public async Task Get_GetNoteList_Returns200OK_ListOfNotes()
         {
@@ -28,14 +27,14 @@ namespace TestsProject
         }
 
         [Fact]
-        public async Task Get_GetNoteList_Returns404NotFound_NoItemsFound()
+        public async Task Get_GetNoteList_Returns404NotFound_NoItemsFoundString()
         {
-            var controller = new NoteBookController(); 
+            var controller = new NoteBookController();
 
             List<Note> notes = new List<Note>();
             IActionResult result = await controller.GetNoteList(notes);
 
-            ObjectResult objRes = Assert.IsType<NotFoundObjectResult>(result);  
+            ObjectResult objRes = Assert.IsType<NotFoundObjectResult>(result);
             Assert.IsType<String>(objRes.Value);
             Assert.Equal(404, objRes.StatusCode);
         }
@@ -43,11 +42,11 @@ namespace TestsProject
         [Fact]
         public async Task Get_GetNoteList_Returns500InternalServerError_ErrorString()
         {
-            var controller = new NoteBookController(); 
+            var controller = new NoteBookController();
 
-            IActionResult result =await controller.GetNoteList(null); 
+            IActionResult result = await controller.GetNoteList(null);
 
-            ObjectResult objRes = Assert.IsType<ObjectResult>(result);  
+            ObjectResult objRes = Assert.IsType<ObjectResult>(result);
             Assert.IsType<String>(objRes.Value);
             Assert.Equal(500, objRes.StatusCode);
         }
@@ -55,6 +54,26 @@ namespace TestsProject
         #endregion
 
         #region GET_GetNote
+
+        [Fact]
+        public async Task Get_GetNote_Return200OK_Note()
+        {
+            var controller = new NoteBookController();
+        }
+
+        [Fact]
+        public async Task Get_GetNote_Return404NotFound_NoItemsFoundString()
+        {
+            var controller = new NoteBookController();
+
+        }
+
+        [Fact]
+        public async Task Get_GetNote_Return500InternalServerError_ErrorString()
+        {
+            var controller = new NoteBookController();
+
+        }
         #endregion
 
         #region POST_AddNote
