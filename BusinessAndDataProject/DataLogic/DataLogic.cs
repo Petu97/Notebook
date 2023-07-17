@@ -44,37 +44,52 @@ namespace BusinessAndDataProject.DataLogic
             }
         }
 
+        Task<RequestReturnObject> IDataLogic.ReturnNote(int? id, string? title)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<RequestReturnObject> IDataLogic.ReturnNotes()
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<RequestReturnObject> IDataLogic.UpdateItem(Note note)
+        {
+            throw new NotImplementedException();
+        }
 
 
-    //    public RequestReturnObject DataLogicGetNote(int id)
-    //    {
-    //        string responseString;
-    //        Note? queryResponse;
 
-    //        try
-    //        {
-    //            if (queryResponse is not null)
-    //            {
-    //                RequestReturnObject responseObject = new RequestReturnObject(null, queryResponse, _returnstate: RequestReturnObject.ReturnState.Ok, null);
-    //                return responseObject;
-    //            }
+        //    public RequestReturnObject DataLogicGetNote(int id)
+        //    {
+        //        string responseString;
+        //        Note? queryResponse;
 
-    //            else
-    //            {
-    //                responseString = "No items found";
-    //                RequestReturnObject requestReturnObject = new RequestReturnObject(null, null, _returnstate: RequestReturnObject.ReturnState.NotFound, responseString);
-    //                return requestReturnObject;
-    //            }
-    //        }
+        //        try
+        //        {
+        //            if (queryResponse is not null)
+        //            {
+        //                RequestReturnObject responseObject = new RequestReturnObject(null, queryResponse, _returnstate: RequestReturnObject.ReturnState.Ok, null);
+        //                return responseObject;
+        //            }
 
-    //        catch
-    //        {
-    //            responseString = "Serverside error";
-    //            RequestReturnObject requestReturnObject = new RequestReturnObject(null, null, _returnstate: RequestReturnObject.ReturnState.InternalServerError, responseString);
-    //            return requestReturnObject;
-    //        }
+        //            else
+        //            {
+        //                responseString = "No items found";
+        //                RequestReturnObject requestReturnObject = new RequestReturnObject(null, null, _returnstate: RequestReturnObject.ReturnState.NotFound, responseString);
+        //                return requestReturnObject;
+        //            }
+        //        }
 
-    //    }
+        //        catch
+        //        {
+        //            responseString = "Serverside error";
+        //            RequestReturnObject requestReturnObject = new RequestReturnObject(null, null, _returnstate: RequestReturnObject.ReturnState.InternalServerError, responseString);
+        //            return requestReturnObject;
+        //        }
+
+        //    }
 
     }
 }
