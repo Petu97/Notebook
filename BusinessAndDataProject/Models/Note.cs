@@ -9,6 +9,7 @@ namespace BusinessAndDataProject.Models
         [JsonPropertyName("id")]
         public int Id { get; set; }
 
+        [Required(AllowEmptyStrings=false)]
         [JsonPropertyName("title")]
         public string Title { get; set; }
 
@@ -18,7 +19,7 @@ namespace BusinessAndDataProject.Models
         [JsonPropertyName("completed")]
         public bool Completed { get; set; } = false;
 
-        public Note(string title, string content, bool completed)
+        public Note(string title, string content="", bool completed=false)
         {
             Title = title;
             Content = content;

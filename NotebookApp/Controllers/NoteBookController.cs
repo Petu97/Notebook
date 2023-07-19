@@ -1,7 +1,6 @@
 ﻿using BusinessAndDataProject.DataLogic;
 using BusinessAndDataProject.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json.Nodes;
 
 namespace NotebookApp.Controllers
 {
@@ -15,7 +14,7 @@ namespace NotebookApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetNoteList() //return all notes
+        public async Task<IActionResult> GetNoteList() 
         {
             RequestReturnObject result = await dataLogic.ReturnNotes();
 
@@ -23,19 +22,19 @@ namespace NotebookApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetNote([FromQuery ]int ?id, [FromQuery] string? title)
+        public async Task<IActionResult> GetNote(int ?id, string? title)
         {
-            RequestReturnObject result = await dataLogic.ReturnNotes(); //implement query
+            RequestReturnObject result = await dataLogic.FindNote(id, title); 
 
             return StatusCode(statusCode: (int)result.returnState, result.Notes);
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostNote(JsonObject newItem)
+        public async Task<IActionResult> PostNote(string title, string content, bool completed)
         {
-            Note newNote = new Note();
+            Note newNote = new Note(title, content, completed);
 
-            RequestReturnObject result = await dataLogic.ReturnNotes(); //implement query
+            RequestReturnObject result = await dataLogic.AddNote(newNote); 
 
             return StatusCode(statusCode: (int)result.returnState, result.Notes);
         }
