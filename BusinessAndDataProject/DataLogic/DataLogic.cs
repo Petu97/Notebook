@@ -19,7 +19,7 @@ namespace BusinessAndDataProject.DataLogic
             DbContext = context;
         }
 
-        public async Task <RequestReturnObject> AddItem(Note note)
+        public async Task <RequestReturnObject> AddNote(Note note)
         {
             RequestReturnObject returnObject;
             try
@@ -44,17 +44,17 @@ namespace BusinessAndDataProject.DataLogic
             }
         }
 
-        Task<RequestReturnObject> IDataLogic.ReturnNote(int? id, string? title)
+        public async Task<RequestReturnObject> FindNote(int? id, string? title)
         {
             throw new NotImplementedException();
         }
 
-        Task<RequestReturnObject> IDataLogic.ReturnNotes()
+        public async Task<RequestReturnObject> ReturnNotes()
         {
             throw new NotImplementedException();
         }
 
-        Task<RequestReturnObject> IDataLogic.UpdateItem(Note note)
+        public async Task<RequestReturnObject> UpdateNote(Note note)
         {
             throw new NotImplementedException();
         }
