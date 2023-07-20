@@ -14,7 +14,7 @@ namespace NotebookApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetNoteList() 
+        public async Task<IActionResult> GET_Notes() 
         {
             RequestReturnObject result = await dataLogic.ReturnNotes();
 
@@ -22,7 +22,7 @@ namespace NotebookApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetNote(int ?id, string? title)
+        public async Task<IActionResult> GET_Note(int ?id, string? title)
         {
             RequestReturnObject result = await dataLogic.FindNote(id, title); 
 
@@ -30,7 +30,7 @@ namespace NotebookApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostNote(string title, string content, bool completed)
+        public async Task<IActionResult> POST_Note(string title, string content, bool completed)
         {
             Note newNote = new Note(title, content, completed);
 
