@@ -80,6 +80,35 @@ namespace TestsProject.UnitTests
         #endregion
 
         #region POST_AddNote
+
+        [Fact]
+        public async Task POST_Note_Returns200OK_AddedNote_WithOptionalParams()
+        {
+            Mockup_DataLogic mockup = new Mockup_DataLogic();
+            var controller = new NoteBookController(mockup); //arrange
+
+            IActionResult result = await controller.POST_Note("Test book", "return 200OK", false);
+
+            ObjectResult objRes = Assert.IsType<ObjectResult>(result);
+            Assert.IsType<string>(objRes.Value);
+            Assert.Equal(200, objRes.StatusCode);
+
+        //assert created object into params
+        }
+
+        [Fact]
+        public async Task POST_Note_Returns200OK_AddedNote_WithoutOptionalParams()
+        {
+            Mockup_DataLogic mockup = new Mockup_DataLogic();
+            var controller = new NoteBookController(mockup); //arrange
+
+            IActionResult result = await controller.POST_Note("Test book without params");
+
+            ObjectResult objRes = Assert.IsType<ObjectResult>(result);
+            Assert.IsType<string>(objRes.Value);
+            Assert.Equal(200, objRes.StatusCode);
+        }
+
         #endregion
 
         #region POST_ModifyNote

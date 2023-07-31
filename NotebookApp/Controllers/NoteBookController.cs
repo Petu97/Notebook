@@ -30,7 +30,7 @@ namespace NotebookApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> POST_Note(string title, string content, bool completed)
+        public async Task<IActionResult> POST_Note(string title, string content="", bool completed=false)
         {
             Note newNote = new Note(title, content, completed);
 
