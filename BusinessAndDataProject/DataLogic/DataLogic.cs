@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
 namespace BusinessAndDataProject.DataLogic
@@ -28,19 +30,19 @@ namespace BusinessAndDataProject.DataLogic
                 await DbContext.SaveChangesAsync(); //returns the number of entries added
                 if (queryResult is not null)
                 {
-                    RequestReturnObject response = new RequestReturnObject(_note: note, _returnstate: RequestReturnObject.ReturnState.Ok, _responseString: "Added note successfully!");
-                    return response;
+                    RequestReturnObject responseObject = new RequestReturnObject(_note: note, _returnstate: RequestReturnObject.ReturnState.Ok, _responseString: "Added note successfully!");
+                    return responseObject;
                 }
                 else
                 {
-                    RequestReturnObject response = new RequestReturnObject(_note: note, _returnstate: RequestReturnObject.ReturnState.BadRequest, _responseString: "Failed to add note to database");
-                    return response;
+                    RequestReturnObject responseObject = new RequestReturnObject(_note: note, _returnstate: RequestReturnObject.ReturnState.BadRequest, _responseString: "Failed to add note to database");
+                    return responseObject;
                 }
             }
             catch //failed to connect to database
             {
-                RequestReturnObject response = new RequestReturnObject(_returnstate: RequestReturnObject.ReturnState.InternalServerError, _responseString: "Failed to connect to db");
-                return response;
+                RequestReturnObject responseObject = new RequestReturnObject(_returnstate: RequestReturnObject.ReturnState.InternalServerError, _responseString: "Failed to connect to db");
+                return responseObject;
             }
         }
 
