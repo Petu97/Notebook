@@ -1,6 +1,7 @@
 ﻿using BusinessAndDataProject.DataLogic;
 using BusinessAndDataProject.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json.Nodes;
 
 namespace NotebookApp.Controllers
 {
@@ -18,7 +19,7 @@ namespace NotebookApp.Controllers
         {
             RequestReturnObject result = await dataLogic.ReturnNotes();
 
-            return StatusCode(statusCode: (int)result.returnState, result.Notes);
+            return StatusCode(statusCode: (int)result.returnState, value: result.Notes);
         }
 
         [HttpGet]
@@ -26,7 +27,7 @@ namespace NotebookApp.Controllers
         {
             RequestReturnObject result = await dataLogic.FindNote(id, title); 
 
-            return StatusCode(statusCode: (int)result.returnState, result.Notes);
+            return StatusCode(statusCode: (int)result.returnState, value: result.Notes);
         }
 
         [HttpPost]
@@ -36,7 +37,7 @@ namespace NotebookApp.Controllers
 
             RequestReturnObject result = await dataLogic.AddNote(newNote); 
 
-            return StatusCode(statusCode: (int)result.returnState, result.Notes);
+            return StatusCode(statusCode: (int)result.returnState, value: result.Note);
         }
 
     }
