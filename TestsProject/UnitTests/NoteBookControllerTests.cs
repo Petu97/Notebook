@@ -15,17 +15,22 @@ namespace TestsProject.UnitTests
             Mockup_DataLogic mockup = new Mockup_DataLogic();
             var controller = new NoteBookController(mockup); //arrange
 
-            //List<Note> notes = new List<Note>();
-            //Note note1 = new Note();
-            //Note note2 = new Note();
-            //notes.Add(note1);
-            //notes.Add(note2);
+            List<Note> seedNotes = new List<Note>(); //seed datalogic response to controller
+            Note note1 = new Note("Test1", "test contest", true);
+            Note note2 = new Note("Test2", "", false);
+            seedNotes.Add(note1);
+            seedNotes.Add(note2);
+            mockup.response.Notes = seedNotes;
+            mockup.response.returnState = RequestReturnObject.ReturnState.Ok;
 
             IActionResult result = await controller.GET_Notes(); //act
 
-            ObjectResult objRes = Assert.IsType<OkObjectResult>(result);  //assert
-            Assert.IsType<List<Note>>(objRes.Value); //object type
+            ObjectResult objRes = Assert.IsType<ObjectResult>(result);  //assert
             Assert.Equal(200, objRes.StatusCode); //statuscode
+
+            Assert.IsType<List<Note>>(objRes.Value); //object type
+            //List<Note> returnedList = (List<Note>) objRes.Value;
+           // Assert.Equal<Note>(seedNotes, objRes.Value);
         }
 
         [Fact]
@@ -34,9 +39,13 @@ namespace TestsProject.UnitTests
             Mockup_DataLogic mockup = new Mockup_DataLogic();
             var controller = new NoteBookController(mockup); //arrange
 
+            List<Note> notes = new List<Note>(); //seed datalogic response to controller
+            mockup.response.Notes = notes;
+            mockup.response.returnState = RequestReturnObject.ReturnState.NotFound;
+
             IActionResult result = await controller.GET_Notes();
 
-            ObjectResult objRes = Assert.IsType<NotFoundObjectResult>(result);
+            ObjectResult objRes = Assert.IsType<ObjectResult>(result);
             Assert.IsType<string>(objRes.Value);
             Assert.Equal(404, objRes.StatusCode);
         }
@@ -86,14 +95,21 @@ namespace TestsProject.UnitTests
         {
             Mockup_DataLogic mockup = new Mockup_DataLogic();
             var controller = new NoteBookController(mockup); //arrange
+            mockup.response.returnState = RequestReturnObject.ReturnState.Ok;
 
-            IActionResult result = await controller.POST_Note("Test book", "return 200OK", false);
+            var result = await controller.POST_Note("Test book", "returns 200OK", true);
 
-            ObjectResult objRes = Assert.IsType<ObjectResult>(result);
-            Assert.IsType<string>(objRes.Value);
-            Assert.Equal(200, objRes.StatusCode);
+            //ObjectResult objRes = Assert.IsType<ObjectResult>(result);
 
-        //assert created object into params
+            var returnedStatus = result as ObjectResult;
+            var returnedNote = returnedStatus.Value as Note;
+
+            Assert.Equal(200, returnedStatus.StatusCode); //statuscode is ok
+
+             //assert created object into params
+            Assert.Equal("Test book", returnedNote.Title);
+            Assert.Equal("returns 200OK", returnedNote.Content);
+            Assert.True(returnedNote.Completed);
         }
 
         [Fact]
@@ -105,8 +121,14 @@ namespace TestsProject.UnitTests
             IActionResult result = await controller.POST_Note("Test book without params");
 
             ObjectResult objRes = Assert.IsType<ObjectResult>(result);
-            Assert.IsType<string>(objRes.Value);
+            //Assert.IsType<string>(objRes.Value);
             Assert.Equal(200, objRes.StatusCode);
+
+            var note = Assert.IsType<Note>(objRes.Value); //assert created object into params
+            Assert.Equal("Test book without params", note.Title);
+            Assert.Equal("", note.Content);
+            Assert.False(note.Completed);
+
         }
 
         #endregion
