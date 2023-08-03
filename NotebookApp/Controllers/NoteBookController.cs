@@ -9,6 +9,10 @@ namespace NotebookApp.Controllers
     {
         private readonly IDataLogic dataLogic;
 
+        private RequestReturnObject internalFailureResponse = new RequestReturnObject(
+            _returnstate: RequestReturnObject.ReturnState.InternalServerError,
+            _responseString: "Whoops we were unable to connect to an internal service, please wait before trying again or call the company");
+
         public NoteBookController(IDataLogic _dataLogic)
         {
             dataLogic = _dataLogic;
@@ -17,17 +21,21 @@ namespace NotebookApp.Controllers
         [HttpGet]
         public async Task<IActionResult> GET_Notes() 
         {
-            RequestReturnObject result = await dataLogic.ReturnNotes();
+            RequestReturnObject ?result = await dataLogic.ReturnNotes();
 
-            return StatusCode(statusCode: (int)result.returnState, value: result.Notes);
+            return result is null
+                ? (IActionResult)StatusCode(statusCode: (int)internalFailureResponse.returnState, value: internalFailureResponse.ResponseString) //null response (failed to connect to logic layer)
+                : StatusCode(statusCode: (int)result.returnState, value: result.Notes); //successfull response (successfully received a response from logic layer)
         }
 
         [HttpGet]
         public async Task<IActionResult> GET_Note(int ?id, string? title)
         {
-            RequestReturnObject result = await dataLogic.FindNote(id, title); 
+            RequestReturnObject ?result = await dataLogic.FindNote(id, title);
 
-            return StatusCode(statusCode: (int)result.returnState, value: result.Notes);
+            return result is null
+                ? (IActionResult)StatusCode(statusCode: (int)internalFailureResponse.returnState, value: internalFailureResponse.ResponseString)
+                : StatusCode(statusCode: (int)result.returnState, value: result.Notes);
         }
 
         [HttpPost]
@@ -35,9 +43,11 @@ namespace NotebookApp.Controllers
         {
             Note newNote = new Note(title, content, completed);
 
-            RequestReturnObject result = await dataLogic.AddNote(newNote); 
+            RequestReturnObject ?result = await dataLogic.AddNote(newNote);
 
-            return StatusCode(statusCode: (int)result.returnState, value: result.Note);
+            return result is null
+                ? (IActionResult)StatusCode(statusCode: (int)internalFailureResponse.returnState, value: internalFailureResponse.ResponseString)
+                : StatusCode(statusCode: (int)result.returnState, value: result.Note);
         }
 
     }

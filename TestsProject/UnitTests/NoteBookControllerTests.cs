@@ -7,6 +7,9 @@ namespace TestsProject.UnitTests
 {
     public class NoteBookControllerTests
     {
+        //one could easily argue against creating test scenarios for controllers since they don't actually change data most of the time. 
+        //these tests are implemented as am exercise
+
         #region GET_GetNoteList
 
         [Fact]
@@ -23,14 +26,16 @@ namespace TestsProject.UnitTests
             mockup.response.Notes = seedNotes;
             mockup.response.returnState = RequestReturnObject.ReturnState.Ok;
 
-            IActionResult result = await controller.GET_Notes(); //act
+            var result = await controller.GET_Notes(); //act
+            var resultObj = result as ObjectResult;
+            var resultList = resultObj.Value as List<Note>;
 
-            ObjectResult objRes = Assert.IsType<ObjectResult>(result);  //assert
-            Assert.Equal(200, objRes.StatusCode); //statuscode
+            Assert.Equal(200, resultObj.StatusCode); //statuscode
+            Assert.IsType<List<Note>>(resultList);
+            Assert.Collection(resultList,
+                item => Assert.Contains("Test1", item.Title),
+                item => Assert.Contains("Test2", item.Title));
 
-            Assert.IsType<List<Note>>(objRes.Value); //object type
-            //List<Note> returnedList = (List<Note>) objRes.Value;
-           // Assert.Equal<Note>(seedNotes, objRes.Value);
         }
 
         [Fact]
@@ -42,12 +47,14 @@ namespace TestsProject.UnitTests
             List<Note> notes = new List<Note>(); //seed datalogic response to controller
             mockup.response.Notes = notes;
             mockup.response.returnState = RequestReturnObject.ReturnState.NotFound;
+            mockup.response.Notes = new List<Note>();
 
-            IActionResult result = await controller.GET_Notes();
+            var result = await controller.GET_Notes();
+            var resultObj = result as ObjectResult;
+            var resultList = resultObj.Value as List<Note>;
 
-            ObjectResult objRes = Assert.IsType<ObjectResult>(result);
-            Assert.IsType<string>(objRes.Value);
-            Assert.Equal(404, objRes.StatusCode);
+            Assert.Equal(404, resultObj.StatusCode);
+            Assert.Empty(resultList);
         }
 
         [Fact]
@@ -56,11 +63,13 @@ namespace TestsProject.UnitTests
             Mockup_DataLogic mockup = new Mockup_DataLogic();
             var controller = new NoteBookController(mockup); //arrange
 
-            IActionResult result = await controller.GET_Notes();
+            var result = await controller.GET_Notes();
+            var resultObj = result as ObjectResult;
+            var resultString = resultObj.Value as string;
 
-            ObjectResult objRes = Assert.IsType<ObjectResult>(result);
-            Assert.IsType<string>(objRes.Value);
-            Assert.Equal(500, objRes.StatusCode);
+            Assert.Equal(500, resultObj.StatusCode);
+            Assert.Equal("Whoops we were unable to connect to an internal service, " +
+                "please wait before trying again or call the company", resultString);
         }
 
         #endregion
@@ -91,45 +100,54 @@ namespace TestsProject.UnitTests
         #region POST_AddNote
 
         [Fact]
-        public async Task POST_Note_Returns200OK_AddedNote_WithOptionalParams()
+        public async Task POST_Note_Returns200OK_CreatedNote_WithOptionalParams()
         {
             Mockup_DataLogic mockup = new Mockup_DataLogic();
-            var controller = new NoteBookController(mockup); //arrange
+            var controller = new NoteBookController(mockup); 
             mockup.response.returnState = RequestReturnObject.ReturnState.Ok;
 
             var result = await controller.POST_Note("Test book", "returns 200OK", true);
+            var resultObj = result as ObjectResult;
+            var resultNote = resultObj.Value as Note;
 
-            //ObjectResult objRes = Assert.IsType<ObjectResult>(result);
-
-            var returnedStatus = result as ObjectResult;
-            var returnedNote = returnedStatus.Value as Note;
-
-            Assert.Equal(200, returnedStatus.StatusCode); //statuscode is ok
-
-             //assert created object into params
-            Assert.Equal("Test book", returnedNote.Title);
-            Assert.Equal("returns 200OK", returnedNote.Content);
-            Assert.True(returnedNote.Completed);
+            Assert.Equal(200, resultObj.StatusCode); //check statuscode
+            Assert.Equal("Test book", resultNote.Title); //check title
+            Assert.Equal("returns 200OK", resultNote.Content); //check content
+            Assert.True(resultNote.Completed); //check state
         }
 
         [Fact]
         public async Task POST_Note_Returns200OK_AddedNote_WithoutOptionalParams()
         {
             Mockup_DataLogic mockup = new Mockup_DataLogic();
-            var controller = new NoteBookController(mockup); //arrange
+            var controller = new NoteBookController(mockup); 
+            mockup.response.returnState = RequestReturnObject.ReturnState.Ok;
 
-            IActionResult result = await controller.POST_Note("Test book without params");
+            var result = await controller.POST_Note("Test book without params");
+            var resultObj = result as ObjectResult;
+            var resultNote = resultObj.Value as Note;
 
-            ObjectResult objRes = Assert.IsType<ObjectResult>(result);
-            //Assert.IsType<string>(objRes.Value);
-            Assert.Equal(200, objRes.StatusCode);
-
-            var note = Assert.IsType<Note>(objRes.Value); //assert created object into params
-            Assert.Equal("Test book without params", note.Title);
-            Assert.Equal("", note.Content);
-            Assert.False(note.Completed);
-
+            Assert.Equal(200, resultObj.StatusCode);
+            Assert.Equal("Test book without params", resultNote.Title);
+            Assert.Equal("", resultNote.Content);
+            Assert.False(resultNote.Completed);
         }
+
+        [Fact]
+        public async Task POST_Note_Returns500InternalServerError_InternalErrorObject()
+        {
+            Mockup_DataLogic mockup = new Mockup_DataLogic();
+            var controller = new NoteBookController(mockup);
+
+            var result = await controller.POST_Note("Test book for error");
+            var resultObj = result as ObjectResult;
+            var resultString = resultObj.Value as string;
+
+            Assert.Equal(500, resultObj.StatusCode);
+            Assert.Equal("Whoops we were unable to connect to an internal service, " +
+                "please wait before trying again or call the company", resultString);
+        }
+
 
         #endregion
 
