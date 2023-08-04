@@ -10,7 +10,7 @@ namespace TestsProject.UnitTests
         //one could easily argue against creating test scenarios for controllers since they don't actually change data most of the time. 
         //these tests are implemented as am exercise
 
-        #region GET_GetNoteList
+        #region GET_RetrunNotes
 
         [Fact]
         public async Task GET_Notes_Returns200OK_ListOfNotes()
@@ -74,27 +74,33 @@ namespace TestsProject.UnitTests
 
         #endregion
 
-        #region GET_GetNote
+        #region GET_FindNote
 
-        //[Fact]
-        //public async Task GET_Note_Return200OK_Note()
-        //{
-        //    var controller = new NoteBookController();
-        //}
+        //Note: finding notes happens on infrastrucure layer and passes it to controller, so
+        //we'll be only testing out that the function returns a list of notes
+        [Fact]
+        public async Task GET_Note_Return200OK_ListOfNote() 
+        {
+            Mockup_DataLogic mockup = new Mockup_DataLogic();
+            var controller = new NoteBookController(mockup);
 
-        //[Fact]
-        //public async Task GET_Note_Return404NotFound_NoItemsFoundString()
-        //{
-        //    var controller = new NoteBookController();
+            List<Note> seedNotes = new List<Note>(); //seed datalogic response to controller
+            Note note1 = new Note("Test1", "test contest", true);
+            Note note2 = new Note("Test2", "", false);
+            seedNotes.Add(note1);
+            seedNotes.Add(note2);
+            mockup.response.Notes = seedNotes;
+            mockup.response.returnState = RequestReturnObject.ReturnState.Ok;
+        }
 
-        //}
+        [Fact]
+        public async Task GET_Note_Return500InternalServerError_ErrorString()
+        {
+            Mockup_DataLogic mockup = new Mockup_DataLogic();
+            var controller = new NoteBookController(mockup); 
 
-        //[Fact]
-        //public async Task GET_Note_Return500InternalServerError_ErrorString()
-        //{
-        //    var controller = new NoteBookController();
+        }
 
-        //}
         #endregion
 
         #region POST_AddNote
@@ -147,7 +153,6 @@ namespace TestsProject.UnitTests
             Assert.Equal("Whoops we were unable to connect to an internal service, " +
                 "please wait before trying again or call the company", resultString);
         }
-
 
         #endregion
 

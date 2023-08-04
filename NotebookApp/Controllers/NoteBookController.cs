@@ -19,7 +19,7 @@ namespace NotebookApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GET_Notes() 
+        public async Task<IActionResult> GET_Notes() //this function is actually obselite, need only the one under
         {
             RequestReturnObject ?result = await dataLogic.ReturnNotes();
 
