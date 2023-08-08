@@ -24,18 +24,21 @@ namespace BusinessAndDataProject.DataLogic
         public async Task <RequestReturnObject> AddNote(Note note)
         {
             RequestReturnObject returnObject;
+
             try
             {
                 var queryResult = DbContext.Notes.Add(note); //returns entityentry type
                 await DbContext.SaveChangesAsync(); //returns the number of entries added
                 if (queryResult is not null)
                 {
-                    RequestReturnObject responseObject = new RequestReturnObject(_note: note, _returnstate: RequestReturnObject.ReturnState.Ok, _responseString: "Added note successfully!");
+                    RequestReturnObject responseObject = new RequestReturnObject(_note: note, 
+                        _returnstate: RequestReturnObject.ReturnState.Ok, _responseString: "Added note successfully!");
                     return responseObject;
                 }
                 else
                 {
-                    RequestReturnObject responseObject = new RequestReturnObject(_note: note, _returnstate: RequestReturnObject.ReturnState.BadRequest, _responseString: "Failed to add note to database");
+                    RequestReturnObject responseObject = new RequestReturnObject(_note: note, 
+                        _returnstate: RequestReturnObject.ReturnState.BadRequest, _responseString: "Failed to add note to database");
                     return responseObject;
                 }
             }
@@ -48,7 +51,26 @@ namespace BusinessAndDataProject.DataLogic
 
         public async Task<RequestReturnObject> FindNote(int? id, string? title)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<Note>? queryResult = DbContext.Notes.Find(id, title);
+
+                if (queryResult is null)
+                    return new RequestReturnObject(_returnstate: RequestReturnObject.ReturnState.InternalServerError,
+                        _responseString: "Failed to fetch data from database");
+
+                if (queryResult.Any()) //return 
+                    return new RequestReturnObject(_returnstate: RequestReturnObject.ReturnState.Ok,
+                        _notes: queryResult);
+                else
+                    return new RequestReturnObject(_returnstate: RequestReturnObject.ReturnState.NotFound,
+                        _notes: queryResult);
+            }
+            catch
+            {
+                return new RequestReturnObject(_returnstate: RequestReturnObject.ReturnState.InternalServerError,
+                    _responseString: "Failed to connect to db");
+            }
         }
 
         public async Task<RequestReturnObject> ReturnNotes()
