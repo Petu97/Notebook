@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -53,7 +54,8 @@ namespace BusinessAndDataProject.DataLogic
         {
             try
             {
-                List<Note>? queryResult = DbContext.Notes.Find(id, title);
+                List<Note>? queryResult = DbContext.Notes.Where(x => id.HasValue ? x.Id == id : true).ToList();
+                queryResult = queryResult.Where(x => string.IsNullOrEmpty(title) ? x.Title.Contains(title) : true).ToList();
 
                 if (queryResult is null)
                     return new RequestReturnObject(_returnstate: RequestReturnObject.ReturnState.InternalServerError,
