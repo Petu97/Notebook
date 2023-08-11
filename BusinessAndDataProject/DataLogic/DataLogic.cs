@@ -1,4 +1,5 @@
 ﻿using BusinessAndDataProject.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,30 +24,24 @@ namespace BusinessAndDataProject.DataLogic
         }
 
         public async Task <RequestReturnObject> AddNote(Note note)
-        {
-            RequestReturnObject returnObject;
-
+        { 
             try
             {
-                var queryResult = DbContext.Notes.Add(note); //returns entityentry type
-                await DbContext.SaveChangesAsync(); //returns the number of entries added
+                var queryResult = DbContext.Notes.Add(note); 
+                await DbContext.SaveChangesAsync(); 
+
                 if (queryResult is not null)
-                {
-                    RequestReturnObject responseObject = new RequestReturnObject(_note: note, 
-                        _returnstate: RequestReturnObject.ReturnState.Ok, _responseString: "Added note successfully!");
-                    return responseObject;
-                }
-                else
-                {
-                    RequestReturnObject responseObject = new RequestReturnObject(_note: note, 
-                        _returnstate: RequestReturnObject.ReturnState.BadRequest, _responseString: "Failed to add note to database");
-                    return responseObject;
-                }
+                    return new RequestReturnObject(_returnstate: RequestReturnObject.ReturnState.Ok, 
+                        _note: note);
+
+                else //is this even running ever?
+                    return new RequestReturnObject(_returnstate: RequestReturnObject.ReturnState.BadRequest,
+                        _note: note);
             }
             catch //failed to connect to database
             {
-                RequestReturnObject responseObject = new RequestReturnObject(_returnstate: RequestReturnObject.ReturnState.InternalServerError, _responseString: "Failed to connect to db");
-                return responseObject;
+                return new RequestReturnObject(_returnstate: RequestReturnObject.ReturnState.InternalServerError, 
+                    _responseString: "Failed to connect to db");
             }
         }
 
@@ -54,12 +49,8 @@ namespace BusinessAndDataProject.DataLogic
         {
             try
             {
-                List<Note>? queryResult = DbContext.Notes.Where(x => id.HasValue ? x.Id == id : true).ToList();
+                List<Note> queryResult = await DbContext.Notes.Where(x => id.HasValue ? x.Id == id : true).ToListAsync();
                 queryResult = queryResult.Where(x => string.IsNullOrEmpty(title) ? x.Title.Contains(title) : true).ToList();
-
-                if (queryResult is null)
-                    return new RequestReturnObject(_returnstate: RequestReturnObject.ReturnState.InternalServerError,
-                        _responseString: "Failed to fetch data from database");
 
                 if (queryResult.Any()) //return 
                     return new RequestReturnObject(_returnstate: RequestReturnObject.ReturnState.Ok,
@@ -80,9 +71,27 @@ namespace BusinessAndDataProject.DataLogic
             throw new NotImplementedException();
         }
 
-        public async Task<RequestReturnObject> UpdateNote(Note note)
+        public async Task<RequestReturnObject> UpdateNote(int NoteID , Note updatedNote)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (await DbContext.Notes.FindAsync(NoteID) is Note unchangedNote)
+                {
+                    DbContext.Entry(unchangedNote).CurrentValues.SetValues(updatedNote);
+                    await DbContext.SaveChangesAsync();
+                    return new RequestReturnObject(_returnstate: RequestReturnObject.ReturnState.Ok,
+                        _note: updatedNote); // maybe should fetch the updated note and return it
+                }
+                else
+                    return new RequestReturnObject(_returnstate: RequestReturnObject.ReturnState.BadRequest,
+                        _note: updatedNote);
+
+            }
+            catch
+            {
+                return new RequestReturnObject(_returnstate: RequestReturnObject.ReturnState.InternalServerError,
+                    _note: updatedNote);
+            }
         }
 
 
