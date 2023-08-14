@@ -94,37 +94,22 @@ namespace BusinessAndDataProject.DataLogic
             }
         }
 
+        public async Task<RequestReturnObject> DeleteNote(int id)
+        {
+            try
+            {
+                var note = await DbContext.Notes.FindAsync(id);
+                DbContext.Notes.Remove(note);
+                DbContext.SaveChangesAsync();
 
-
-        //    public RequestReturnObject DataLogicGetNote(int id)
-        //    {
-        //        string responseString;
-        //        Note? queryResponse;
-
-        //        try
-        //        {
-        //            if (queryResponse is not null)
-        //            {
-        //                RequestReturnObject responseObject = new RequestReturnObject(null, queryResponse, _returnstate: RequestReturnObject.ReturnState.Ok, null);
-        //                return responseObject;
-        //            }
-
-        //            else
-        //            {
-        //                responseString = "No items found";
-        //                RequestReturnObject requestReturnObject = new RequestReturnObject(null, null, _returnstate: RequestReturnObject.ReturnState.NotFound, responseString);
-        //                return requestReturnObject;
-        //            }
-        //        }
-
-        //        catch
-        //        {
-        //            responseString = "Serverside error";
-        //            RequestReturnObject requestReturnObject = new RequestReturnObject(null, null, _returnstate: RequestReturnObject.ReturnState.InternalServerError, responseString);
-        //            return requestReturnObject;
-        //        }
-
-        //    }
-
+                return new RequestReturnObject(_returnstate: RequestReturnObject.ReturnState.Ok,
+                    _note: note);
+            }
+            catch
+            {
+                return new RequestReturnObject(_returnstate: RequestReturnObject.ReturnState.InternalServerError,
+                    _responseString: "Could not delete item");
+            }
+        }
     }
 }

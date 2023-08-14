@@ -10,9 +10,8 @@ namespace BusinessAndDataProject.DataLogic
     public interface IDataLogic 
     {
         Task<RequestReturnObject> AddNote(Note note);
-        Task<RequestReturnObject> UpdateNote(Note note);
+        Task<RequestReturnObject> UpdateNote(int id, Note note);
         Task<RequestReturnObject> FindNote(int? id, string? title);
-        Task<RequestReturnObject> ReturnNotes();
-
+        Task<RequestReturnObject> DeleteNote(int id);
     }
 }
