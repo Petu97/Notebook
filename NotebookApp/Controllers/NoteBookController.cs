@@ -5,6 +5,8 @@ using System.Text.Json.Nodes;
 
 namespace NotebookApp.Controllers
 {
+    [ApiController]
+    [Route("note")]
     public class NoteBookController : Controller
     {
         //improvement idea: updated error handler as middleware. Clarifies controller and datalogic
@@ -19,16 +21,6 @@ namespace NotebookApp.Controllers
         {
             dataLogic = _dataLogic;
         }
-
-        //[HttpGet]
-        //public async Task<IActionResult> GET_Notes() //this function is actually obselite, need only the one under
-        //{
-        //    RequestReturnObject ?result = await dataLogic.ReturnNotes();
-
-        //    return result is null
-        //        ? (IActionResult)StatusCode(statusCode: (int)internalFailureResponse.returnState, value: internalFailureResponse.ResponseString) //null response (failed to connect to logic layer)
-        //        : StatusCode(statusCode: (int)result.returnState, value: result.Notes); //successfull response (successfully received a response from logic layer)
-        //}
 
         [HttpGet]
         public async Task<IActionResult> GET_Notes(int ?id, string? title)
@@ -49,6 +41,31 @@ namespace NotebookApp.Controllers
                 return StatusCode(statusCode: 400, value: "Oops failed to create a note, please make sure your input follows the given rules");
 
             RequestReturnObject ?result = await dataLogic.AddNote(newNote);
+
+            return result is null
+                ? (IActionResult)StatusCode(statusCode: (int)internalFailureResponse.returnState, value: internalFailureResponse.ResponseString)
+                : StatusCode(statusCode: (int)result.returnState, value: result.Note);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GET_UpdateNote(int NoteId, string title, string content = "", bool completed = false)
+        {
+            Note newNote = new Note(title, content, completed);
+
+            if (!TryValidateModel(newNote)) //validate model before trying to add it ro db
+                return StatusCode(statusCode: 400, value: "Oops failed to create a note, please make sure your input follows the given rules");
+
+            RequestReturnObject? result = await dataLogic.UpdateNote(NoteId, newNote);
+
+            return result is null
+                ? (IActionResult)StatusCode(statusCode: (int)internalFailureResponse.returnState, value: internalFailureResponse.ResponseString)
+                : StatusCode(statusCode: (int)result.returnState, value: result.Note);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GET_DeleteNote(int id)
+        {
+            RequestReturnObject? result = await dataLogic.DeleteNote(id);
 
             return result is null
                 ? (IActionResult)StatusCode(statusCode: (int)internalFailureResponse.returnState, value: internalFailureResponse.ResponseString)
