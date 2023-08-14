@@ -10,6 +10,21 @@ namespace TestsProject.UnitTests
     {
         #region FindNote
 
+        public async Task FindNote_RequestReturnObject_Ok()
+        {
+
+        }
+
+        public async Task FindNote_RequestReturnObject_NotFound()
+        {
+
+        }
+
+        public async Task FindNote_RequestReturnObject_InternalError()
+        {
+
+        }
+
         #endregion
 
         #region AddNote
@@ -32,9 +47,31 @@ namespace TestsProject.UnitTests
 
         #region UpdateNote
 
+        public async Task UpdateNote_RequestReturnObject_Ok()
+        {
+
+        }
+        public async Task UpdateNote_RequestReturnObject_BadRequest()
+        {
+
+        }
+        public async Task UpdateNote_RequestReturnObject_InternalError()
+        {
+
+        }
+
         #endregion
 
         #region DeleteNote
+
+        public async Task DeleteNote_RequestReturnObject_Ok()
+        {
+
+        }
+        public async Task DeleteNote_RequestReturnObject_InternalError()
+        {
+
+        }
 
         #endregion
     }
