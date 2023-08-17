@@ -27,7 +27,7 @@ namespace BusinessAndDataProject.DataLogic
         { 
             try
             {
-                var queryResult = DbContext.Notes.Add(note); 
+                var queryResult = DbContext.Notes.Update(note); 
                 await DbContext.SaveChangesAsync(); 
 
                 if (queryResult is not null)
@@ -77,6 +77,7 @@ namespace BusinessAndDataProject.DataLogic
             {
                 if (await DbContext.Notes.FindAsync(NoteID) is Note unchangedNote)
                 {
+                    updatedNote.Id = NoteID;
                     DbContext.Entry(unchangedNote).CurrentValues.SetValues(updatedNote);
                     await DbContext.SaveChangesAsync();
                     return new RequestReturnObject(_returnstate: RequestReturnObject.ReturnState.Ok,
