@@ -1,4 +1,5 @@
 using BusinessAndDataProject;
+using BusinessAndDataProject.DataLogic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
@@ -10,6 +11,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<NoteBookDbContext>();
+builder.Services.AddScoped<IDataLogic, DataLogic>();
 
 
 var app = builder.Build();
