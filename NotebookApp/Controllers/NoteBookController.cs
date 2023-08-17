@@ -47,6 +47,7 @@ namespace NotebookApp.Controllers
                 : StatusCode(statusCode: (int)result.returnState, value: result.Note);
         }
 
+        [Route("update")]
         [HttpGet]
         public async Task<IActionResult> GET_UpdateNote(int NoteId, string title, string content = "", bool completed = false)
         {
@@ -62,6 +63,7 @@ namespace NotebookApp.Controllers
                 : StatusCode(statusCode: (int)result.returnState, value: result.Note);
         }
 
+        [Route("delete")]
         [HttpGet]
         public async Task<IActionResult> GET_DeleteNote(int id)
         {
